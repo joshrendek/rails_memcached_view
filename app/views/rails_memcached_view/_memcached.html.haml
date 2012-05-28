@@ -1,0 +1,126 @@
+%h1 Cache Servers 
+- Rails.cache.stats.each do |hostname, stats| 
+  %h3=hostname
+  .container
+    .row 
+      .span4 
+        %center 
+          %b Cache Size
+          #cache_size{:style => "height: 150px; width: 150px"}
+        :javascript 
+          $(function () { 
+            var cache_size = [ 
+              { label: "Used Bytes", data: #{stats['bytes']}},
+              { label: "Total Bytes", data: #{stats['limit_maxbytes']}}
+            ];
+            $.plot($('#cache_size'), cache_size, { 
+              series: { pie: { show: true } },
+              legend: { show: false }
+            });
+          });
+      .span4 
+        %center 
+          %b Usage 
+          #cache_usage{:style => "height: 150px; width: 150px"}
+        :javascript 
+          $(function () { 
+            var cache_size = [ 
+              { label: "Bytes Read", data: #{stats['bytes_read']}},
+              { label: "Bytes Written", data: #{stats['bytes_written']}}
+            ];
+            $.plot($('#cache_usage'), cache_size, { 
+              series: { pie: { show: true } },
+              legend: { show: false }
+            });
+          });
+      .span4 
+        %center
+          %b Hits/Misses
+          #cache_hm{:style => "height: 150px; width: 150px"}
+        :javascript 
+          $(function () { 
+            var cache_size = [ 
+              { label: "Cache Hits", data: #{stats['incr_hits'] + stats['get_hits'] + stats['delete_hits'] + stats['cas_hits'] + stats['decr_hits']}},
+              { label: "Cache Misses", data: #{stats['delete_misses'] + stats['cas_misses'] + stats['decr_misses'] + stats['get_misses'] + stats['incr_misses']}}
+            ];
+            $.plot($('#cache_hm'), cache_size, { 
+              series: { pie: { show: true } },
+              legend: { show: false }
+            });
+          });
+  %table.table.table-condensed.table-bordered 
+    %tr 
+      %td PID
+      %td= stats['pid']
+
+      %td Version 
+      %td= stats['version']
+
+      %td Cache Flushes
+      %td= stats['cmd_flush']
+
+    %tr 
+      %td Current Items
+      %td= stats['curr_items']
+
+      %td Total Items
+      %td= stats['total_items']
+
+      %td Threads 
+      %td= stats['threads']
+
+    %tr 
+      %td Delete Misses
+      %td= stats['delete_misses']
+
+      %td CAS Misses
+      %td= stats['cas_misses']
+
+      %td Evictions 
+      %td= stats['evictions']
+
+    %tr 
+      %td Bytes 
+      %td= number_to_human_size(stats['bytes'])
+
+      %td Max Byte Limit
+      %td= number_to_human_size(stats['limit_maxbytes'])
+
+      %td Bytes Read / Written
+      %td
+        = number_to_human_size(stats['bytes_read'])
+        \/
+        = number_to_human_size(stats['bytes_written'])
+
+
+    %tr 
+      %td Uptime 
+      %td= time_ago_in_words(DateTime.now.advance(:seconds => -1*stats['uptime'].to_i))
+
+      %td Connections 
+      %td= stats['curr_connections']
+
+      %td Pointer Size 
+      %td= stats['pointer_size']
+
+    %tr 
+      %td Get Commands 
+      %td= stats['cmd_get']
+
+      %td Get Hits
+      %td= stats['get_hits']
+
+      %td Get Misses 
+      %td= stats['get_misses']
+
+    %tr 
+      %td Set Commands 
+      %td= stats['cmd_set']
+
+      %td Decr Hits 
+      %td= stats['decr_hits']
+
+      %td Decr Misses
+      %td= stats['decr_misses']
+
+
