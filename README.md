@@ -1,12 +1,16 @@
-# Installing
+# Installing with Bundler
 
-``` gem install rails_memcached_view ```
+``` 
+gem 'rails_memcached_view' 
+```
 
 # Usage 
 
 Inside a haml file: 
 
-``` render :partial => 'rails_memcached_view/memcached' ```
+``` 
+render :partial => 'rails_memcached_view/memcached' 
+```
 
 # Demo 
 
